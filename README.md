@@ -10,7 +10,7 @@
 npm install --save redux-rest-hooks
 ```
 
-## Usage
+## Basic Usage
 
 For brevity, we'll just show the simplest workable pieces of code.
 
@@ -59,7 +59,7 @@ export default UserListPagination;
 import React from 'react';
 import { useCreateEntity } from 'redux-rest-hooks';
 
-const CreateUser = ({id}) => {
+const CreateUser = () => {
   const {create, isCreating, data, createError} = useCreateEntity('album');
   return <>
     <button onClick={() => create({ title: 'Demo album' })}>Create</button>
@@ -133,6 +133,26 @@ export default combineReducers({
   // your reducers
 });
 ```
+
+## Advanced usage
+
+##### useEntityActions is utility hook which allows to call API for any entity ID or refetch part of list or full list
+##### Allows you to do advanced tuning of data updates in your application
+
+```javascript
+    const user = useEntityActions('user');
+    user.get({ id: 10, ...customParams });
+    user.getList(customParams);
+    user.getList({ index: 50, size: 10, ...customParams });
+    user.create(customPayload);
+    user.put({ id: 55, customPayload });
+    user.patch({ id: 55, customPayload });
+    user.remove({ id: 55 });
+```
+
+Without pagination params you fetch full list.
+
+If only **index** param is provided you fetch all the items starting from specific index.
 
 ## License
 
