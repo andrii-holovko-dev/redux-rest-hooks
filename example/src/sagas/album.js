@@ -14,9 +14,8 @@ export const getList = function* ({id}) {
 
 
 
-export const create = function* ({id}) {
-  yield delay(2000);
-  return { demo: Math.random(), id: parseInt(Math.random() * 100) };
+export const create = function* (payload) {
+  return yield call(fetchJSON, `https://jsonplaceholder.typicode.com/albums/`, { method: 'POST', body: payload });
 };
 
 export const put = ({id}) => fetchJSON(`https://jsonplaceholder.typicode.com/albums/${id}`);
