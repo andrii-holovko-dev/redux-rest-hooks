@@ -71,7 +71,7 @@ const CreateUser = () => {
 export default CreateUser;
 ```
 
-#### 4. In order to make previous examples workable define asynchronous logic you need (api calls) using redux-saga generators:
+#### 4. In order to make previous examples workable define asynchronous logic (api calls) using redux-saga generators:
 Supported generator names are: **get, getList, create, put, patch, remove**
 
 ```javascript
@@ -91,6 +91,8 @@ export const create = function* (payload) {
   return yield call(fetchJSON, `https://jsonplaceholder.typicode.com/users/`, { method: 'POST', body: payload });
 };
 ```
+
+**IMPORTANT:** The functions you distruct from useEntity, useEntityList, useCreateEntity have names equal to generator names and the first argument you pass to the hook is what you receive in appropriate generator so you can pass any variables you need.
 
 The library automatically resolves concurrency issues using algorithm similar to **takeLatest** so most of the time you don't have to manage concurrency by yourself. For more advanced tuning you are free to use any redux-saga tools.
 
@@ -115,6 +117,7 @@ sagaMiddleware.run(makeRootSaga({ user }));
 
 #### 6. If your project already has root saga then you have to fork makeRootSaga call:
 ```javascript
+import {makeRootSaga} from 'redux-rest-hooks';
 import * as user from './sagas/user';
 
 function* yourRootSaga() {
@@ -136,8 +139,9 @@ export default combineReducers({
 
 ## Advanced usage
 
-##### useEntityActions is utility hook which allows to call API for any entity ID or refetch part of list or full list
-##### Allows you to do advanced tuning of data updates in your application
+**useEntityActions** is utility hook which allows to call API for any entity ID or refetch part of list or full list
+
+Allows you to do advanced tuning of data updates in your application
 
 ```javascript
     const user = useEntityActions('user');
@@ -150,9 +154,7 @@ export default combineReducers({
     user.remove({ id: 55 });
 ```
 
-Without pagination params you fetch full list.
-
-If only **index** param is provided you fetch all the items starting from specific index.
+**IMPORTANT:** If only **index** param is provided than library expects that all the items starting from this index will be returned by generator.
 
 ## License
 
