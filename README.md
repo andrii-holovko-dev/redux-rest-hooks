@@ -12,16 +12,54 @@ npm install --save redux-rest-hooks
 
 ## Usage
 
-Suppose we have a UI to post some album data on a remote server when "Create" button is clicked.
- (For brevity, we'll just show the simplest workable piece of code.)
+For brevity, we'll just show the simplest workable pieces of code.
 
-1. Create a component:
+#### 1. Declarative fetching of users list from backend:
+```javascript
+import React from 'react';
+import { useEntityList } from 'redux-rest-hooks';
+
+const UserListFull = () => {
+  const {data: users, refetch, isLoadingList, getListError} = useEntityList('user');
+  return <>
+    { isLoadingList ? <div>Loading...</div> :
+       users.map(user => <div key={user.id}>{user.name}</div>) }
+    <button onClick={refetch}>Refetch page</button>
+  </>;
+};
+
+export default UserListFull;
+```
+
+#### 2. If you want to use pagination check following example:
+
+```javascript
+import React from 'react';
+import { useEntityList } from 'redux-rest-hooks';
+
+const UserListPagination = () => {
+  const [index, setIndex] = useState(0);
+  const {data: users, refetch, isLoadingList, getListError} = useEntityList('user', { index, size: 10 });
+
+  return <>
+    { index > 0 && <button onClick={() => setIndex(index - 10)}>Prev Page</button> }
+    <button onClick={() => setIndex(index + 10)}>Next Page</button>
+    { isLoadingList ? <div>Loading...</div> :
+       users.map(user => <div key={user.id}>{user.name}</div>) }
+    <button onClick={refetch}>Refetch page</button>
+  </>;
+};
+
+export default UserListPagination;
+```
+
+#### 3. Suppose we have a UI to post some user on a remote server when "Create" button is clicked.
 
 ```javascript
 import React from 'react';
 import { useCreateEntity } from 'redux-rest-hooks';
 
-const CreateAlbum = ({id}) => {
+const CreateUser = ({id}) => {
   const {create, isCreating, data, createError} = useCreateEntity('album');
   return <>
     <button onClick={() => create({ title: 'Demo album' })}>Create</button>
@@ -30,25 +68,41 @@ const CreateAlbum = ({id}) => {
   </>;
 };
 
-export default CreateAlbum;
+export default CreateUser;
 ```
 
-2. Define any asynchronous logic you need to make a request using redux-saga generator:
+#### 4. In order to make previous examples workable define asynchronous logic you need (api calls) using redux-saga generators:
+Supported generator names are: **get, getList, create, put, patch, remove**
 
 ```javascript
+import { call } from 'redux-saga/effects'
+import { fetchJSON } from 'redux-rest-hooks';
+
+export const get = function* ({ id }) {
+  return yield call(fetchJSON, `https://jsonplaceholder.typicode.com/users/${id}`);
+};
+
+export const getList = function* () {
+  const data = yield call(fetchJSON, `https://jsonplaceholder.typicode.com/users`);
+  return { data };
+};
+
 export const create = function* (payload) {
-  return yield call(fetchJSON, `https://jsonplaceholder.typicode.com/albums/`, { method: 'POST', body: payload });
+  return yield call(fetchJSON, `https://jsonplaceholder.typicode.com/users/`, { method: 'POST', body: payload });
 };
 ```
 
-3. To allow the library use such generators we'll have to create our root saga using makeRootSaga utility function:
+The library automatically resolves concurrency issues using algorithm similar to **takeLatest** so most of the time you don't have to manage concurrency by yourself. For more advanced tuning you are free to use any redux-saga tools.
+
+
+#### 5. In order to integrate these generators to your applications you have to create root saga using makeRootSaga utility function:
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import {makeRootSaga} from 'redux-rest-hooks';
+import * as user from './sagas/user';
 
 import reducer from './reducers'
-import album from './albumSagas'
 
 const sagaMiddleware = createSagaMiddleware()
 const store = createStore(
@@ -56,18 +110,20 @@ const store = createStore(
   applyMiddleware(sagaMiddleware)
 )
 
-sagaMiddleware.run(makeRootSaga({ album }));
+sagaMiddleware.run(makeRootSaga({ user }));
 ``` 
 
-4. If your project already uses redux-saga then you have to fork makeRootSaga call:
+#### 6. If your project already has root saga then you have to fork makeRootSaga call:
 ```javascript
-    function* yourRootSaga() {
-      fork(makeRootSaga({ album }))
-      /// ...your code
-    }
+import * as user from './sagas/user';
+
+function* yourRootSaga() {
+  fork(makeRootSaga({ user }))
+  /// ...your code
+}
 ```
 
-5. Use imported dataReducer to allow the library manage redux store.
+#### 7. Use imported dataReducer to allow the library manage redux store:
 ```javascript
 import {combineReducers} from "redux";
 import {dataReducer} from "redux-rest-hooks";
