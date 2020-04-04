@@ -92,7 +92,7 @@ export const create = function* (payload) {
 };
 ```
 
-**IMPORTANT:** The functions you distruct from useEntity, useEntityList, useCreateEntity have names equal to generator names and the first argument you pass to the hook is what you receive in appropriate generator so you can pass any variables you need.
+**IMPORTANT:** The functions you distruct from **useEntity, useEntityList, useCreateEntity** have names equal to generator names and the first argument you pass to the hook is what you receive in appropriate generator so you can pass any variables you need.
 
 The library automatically resolves concurrency issues using algorithm similar to **takeLatest** so most of the time you don't have to manage concurrency by yourself. For more advanced tuning you are free to use any redux-saga tools.
 
