@@ -1,0 +1,11 @@
+.idea
+.idea/
+.vscode
+.DS_Store
+.eslintcache
+.stylelintcache
+logs
+node_modules
+dist
+build
+.editorconfig
