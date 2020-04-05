@@ -21,9 +21,8 @@ const Album = React.memo(({id}) => {
 });
 
 
-const Album2 = React.memo(() => {
-  const test = useEntity('album', {id: 2});
-  console.log('ONCE ALBUM2')
+const User = React.memo(({ id }) => {
+  const { data, isLoading } = useEntity('user', {id});
   return <div>{JSON.stringify(test.data)}</div>;
 });
 

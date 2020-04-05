@@ -1,6 +1,7 @@
-# redux-rest-hooks
+# Redux REST Hooks
 
-> Declarative REST API fetching using React Hooks and Redux
+> Redux REST Hooks is a set of tools for communication with REST APIs in React frontends. Declaratively fetch data from API and store it in Redux.
+
 
 [![NPM](https://img.shields.io/npm/v/redux-rest-hooks.svg)](https://www.npmjs.com/package/redux-rest-hooks) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -10,11 +11,33 @@
 npm install --save redux-rest-hooks
 ```
 
-## Basic Usage
+## Motivation
+
+- all fetched data should be persisted in redux store for the duration of application session
+- never refetch data from API that has been already persisted in the application state unless **refetch()** gets called or **autoFetch===false**
+- support tools for **post, put, patch** and **delete** data, manage loading state, error state and update store with successful response
+- support **pagination** and resolve **concurrency** issues
+- provide simple and consistent Redux store structure and hooks API
+
+## Usage
 
 For brevity, we'll just show the simplest workable pieces of code.
 
-#### 1. Declarative fetching of users list from backend:
+### 1. Declarative fetching of user by ID:
+
+```javascript
+import React from 'react';
+import { useEntity } from 'redux-rest-hooks';
+
+const UserView = ({id}) => {
+  const { data, isLoading } = useEntity('user', {id});
+  return <div>{isLoading ? 'Loading...' : JSON.stringify(data)}</div>;
+};
+
+export default UserView;
+```
+
+#### 2. Declarative fetching of full users list:
 ```javascript
 import React from 'react';
 import { useEntityList } from 'redux-rest-hooks';
@@ -31,7 +54,7 @@ const UserListFull = () => {
 export default UserListFull;
 ```
 
-#### 2. If you want to use pagination check following example:
+#### 3. Declarative fetching with pagination:
 
 ```javascript
 import React from 'react';
@@ -53,7 +76,7 @@ const UserListPagination = () => {
 export default UserListPagination;
 ```
 
-#### 3. Suppose we have a UI to post some user on a remote server when "Create" button is clicked.
+#### 4. Suppose we have a UI to post some user on a remote server:
 
 ```javascript
 import React from 'react';
@@ -71,7 +94,7 @@ const CreateUser = () => {
 export default CreateUser;
 ```
 
-#### 4. In order to make previous examples workable define asynchronous logic (api calls) using redux-saga generators:
+#### 5. In order to make previous examples workable define asynchronous logic (api calls) using redux-saga generators:
 Supported generator names are: **get, getList, create, put, patch, remove**
 
 ```javascript
@@ -92,12 +115,14 @@ export const create = function* (payload) {
 };
 ```
 
-**IMPORTANT:** The functions you distruct from **useEntity, useEntityList, useCreateEntity** have names equal to generator names and the first argument you pass to the hook is what you receive in appropriate generator so you can pass any variables you need.
+**IMPORTANT:** The functions you distruct from **useEntity, useEntityList, useCreateEntity** have names equal to generator names.
+
+The first argument you pass to the hook is what you receive in appropriate generator so you can pass any variables you need.
 
 The library automatically resolves concurrency issues using algorithm similar to **takeLatest** so most of the time you don't have to manage concurrency by yourself. For more advanced tuning you are free to use any redux-saga tools.
 
 
-#### 5. In order to integrate these generators to your applications you have to create root saga using makeRootSaga utility function:
+#### 6. In order to integrate these generators to your applications you have to create root saga using makeRootSaga utility function:
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
@@ -115,7 +140,7 @@ const store = createStore(
 sagaMiddleware.run(makeRootSaga({ user }));
 ``` 
 
-#### 6. If your project already has root saga then you have to fork makeRootSaga call:
+#### 7. If your project already has root saga then you have to fork makeRootSaga call:
 ```javascript
 import {makeRootSaga} from 'redux-rest-hooks';
 import * as user from './sagas/user';
@@ -126,7 +151,7 @@ function* yourRootSaga() {
 }
 ```
 
-#### 7. Use imported dataReducer to allow the library manage redux store:
+#### 8. Use imported dataReducer to allow the library manage redux store:
 ```javascript
 import {combineReducers} from "redux";
 import {dataReducer} from "redux-rest-hooks";
