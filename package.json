@@ -1,6 +1,6 @@
 {
   "name": "redux-rest-hooks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Declarative REST API fetching using React Hooks and Redux",
   "author": "Andrii Holovko andrii.holovko.dev@gmail.com",
   "license": "MIT",
