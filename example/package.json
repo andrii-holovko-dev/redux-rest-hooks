@@ -4,15 +4,18 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.9.10",
+    "@material-ui/icons": "^4.9.1",
+    "lodash": "file:../node_modules/lodash",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
-    "react-scripts": "file:../node_modules/react-scripts",
-    "lodash": "file:../node_modules/lodash",
     "react-redux": "file:../node_modules/react-redux",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "file:../node_modules/react-scripts",
     "redux": "file:../node_modules/redux",
+    "redux-rest-hooks": "file:..",
     "redux-saga": "file:../node_modules/redux-saga",
-    "reselect": "file:../node_modules/reselect",
-    "redux-rest-hooks": "file:.."
+    "reselect": "file:../node_modules/reselect"
   },
   "scripts": {
     "start": "node ../node_modules/react-scripts/bin/react-scripts.js start",

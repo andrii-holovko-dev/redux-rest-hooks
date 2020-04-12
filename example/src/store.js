@@ -4,8 +4,8 @@ import createSagaMiddleware from 'redux-saga';
 import rootReducer from './reducers/rootReducer';
 
 import * as album from './sagas/album';
-import * as comment from './sagas/album';
-import * as user from './sagas/album';
+import * as post from './sagas/post';
+import * as user from './sagas/user';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
@@ -14,7 +14,7 @@ export default function configureStore() {
         rootReducer,
         composeEnhancers(applyMiddleware(sagaMiddleware))
     );
-    sagaMiddleware.run(makeRootSaga({album, comment, user}));
+    sagaMiddleware.run(makeRootSaga({album, post, user}));
     return store;
 }
 

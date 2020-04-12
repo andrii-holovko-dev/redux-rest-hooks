@@ -29,7 +29,7 @@ export const makeStoredDataListSelector = (type, index = 0, size = 0 ) => {
           .filter(item => item),
         isListLoaded: size ? isLimitedLoaded : isInfiniteLoaded,
         isLoadingList: get(data, 'isLoadingList'),
-        listResponse: get(data, 'listResponse'),
+        listResponse: get(data, 'listResponse', {}),
       };
     },
   );

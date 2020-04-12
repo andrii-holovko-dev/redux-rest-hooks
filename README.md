@@ -19,6 +19,9 @@ npm install --save redux-rest-hooks
 - support **pagination** and resolve **concurrency** issues
 - provide simple and consistent Redux store structure and hooks API
 
+## Persisted lists with pagination demo:
+https://andrii-holovko-dev.github.io/redux-rest-hooks/
+
 ## Usage
 
 For brevity, we'll just show the simplest workable pieces of code.
@@ -83,9 +86,9 @@ import React from 'react';
 import { useCreateEntity } from 'redux-rest-hooks';
 
 const CreateUser = () => {
-  const {create, isCreating, data, createError} = useCreateEntity('album');
+  const {create, isCreating, data, createError} = useCreateEntity('user');
   return <>
-    <button onClick={() => create({ title: 'Demo album' })}>Create</button>
+    <button onClick={() => create({ title: 'Demo user' })}>Create</button>
     <div>{isCreating ? 'Creating...' : JSON.stringify(data)}</div>
     <div>{JSON.stringify(createError)}</div>
   </>;
